@@ -46,15 +46,15 @@ namespace FitnesTracker.Models
                 {
                     for (int k = 0; k < userActivity[i].Length; k++)
                     {
-                        if (userActivity[i][k].User == users[k].UserName)
+                        if (userActivity[i][k].User == users[j].UserName)
                         {
-                            users[k].AddData(userActivity[i][k].Rank, userActivity[i][k].Status, userActivity[i][k].Steps);
+                            users[j].AddData(userActivity[i][k].Rank, userActivity[i][k].Status, userActivity[i][k].Steps);
                         }
                     }
                 }
             }
 
-            Debug.WriteLine(users[5].UserName + " " + users[5].Status[2] + " " + users[5].Steps[2] + " " + users[5].AverageSteps);
+            Debug.WriteLine(users[0].UserName + " " + users[0].Status + " " + users[0].Steps + " " + users[0].AverageSteps);
         }
     }
 }

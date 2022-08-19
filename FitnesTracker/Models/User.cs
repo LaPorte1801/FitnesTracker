@@ -4,10 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace FitnesTracker.Models
 {
-    internal class User
+    internal class User : DependencyObject
     {
         public List<int> Rank { get; }
         public string? UserName { get; }
@@ -49,5 +50,17 @@ namespace FitnesTracker.Models
             Status.Add(status);
             Steps.Add(steps);
         }
+
+        public int StepsProperty
+        {
+            get { return (int)GetValue(StepsPropertyProperty); }
+            set { SetValue(StepsPropertyProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for StepsProperty.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StepsPropertyProperty =
+            DependencyProperty.Register("StepsProperty", typeof(int), typeof(User), new PropertyMetadata(0));
+
+
     }
 }

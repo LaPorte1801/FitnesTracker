@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace FitnesTracker.ViewModel
 {
-    internal class UserActivityViewModel
+    public class UserActivityViewModel
     {
-
+        public UserActivityViewModel()
+        {
+            Models.UserCreator userCreator = new Models.UserCreator();
+        }
     }
 }

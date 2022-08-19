@@ -46,7 +46,7 @@ namespace FitnesTracker.View
             //{
             //    Debug.WriteLine($"{act.Steps}");
             //}
-            Models.UserCreator userCreator = new Models.UserCreator();
+            
         }
     }
 }
