@@ -13,7 +13,11 @@ namespace FitnesTracker.Models
         public List<int> Rank { get; }
         public string? UserName { get; }
         public List<string> Status { get; }
-        public List<int> Steps { get; }
+        public List<int> Steps 
+        {
+            get { return (List<int>)GetValue(StepsProperty); }
+            set { SetValue(StepsProperty, value); }
+        }
         public int AverageSteps 
         {
             get
@@ -44,6 +48,11 @@ namespace FitnesTracker.Models
             Steps = new List<int>();
         }
 
+        static User()
+        {
+            StepsProperty = DependencyProperty.Register("Steps", typeof(List<int>), typeof(User));
+        }
+
         public void AddData(int rank, string status, int steps)
         {
             Rank.Add(rank);
@@ -51,16 +60,7 @@ namespace FitnesTracker.Models
             Steps.Add(steps);
         }
 
-        public int StepsProperty
-        {
-            get { return (int)GetValue(StepsPropertyProperty); }
-            set { SetValue(StepsPropertyProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for StepsProperty.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty StepsPropertyProperty =
-            DependencyProperty.Register("StepsProperty", typeof(int), typeof(User), new PropertyMetadata(0));
-
+        public static readonly DependencyProperty StepsProperty;
 
     }
 }

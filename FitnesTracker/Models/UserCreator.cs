@@ -11,10 +11,13 @@ namespace FitnesTracker.Models
 {
     internal class UserCreator
     {
+        public List<User> Users { get; }
         public UserCreator()
         {
             string path = Environment.CurrentDirectory + "/TestData";
             string[] files = Directory.GetFiles(path);
+            
+            Users = new List<User>();
 
             List<UserActivity[]> userActivity = new();
 
@@ -26,19 +29,17 @@ namespace FitnesTracker.Models
                 {
                     userActivity.Add(JsonSerializer.Deserialize<UserActivity[]>(jsonData));
                 }
-                catch (ArgumentException ex)
+                catch (ArgumentNullException ex)
                 {
                     Debug.WriteLine(ex.Message);
                 }
             }
 
-            List<User> users = new List<User>();
-
             for (int i = 0; i < userActivity[20].Length; i++)
             {
-                users.Add(new User(userActivity[20][i].User));
+                Users.Add(new User(userActivity[20][i].User));
             }
-            Debug.WriteLine(users.Count);
+            Debug.WriteLine(Users.Count);
 
             for (int i = 0; i < userActivity.Count; i++)
             {
@@ -46,15 +47,15 @@ namespace FitnesTracker.Models
                 {
                     for (int k = 0; k < userActivity[i].Length; k++)
                     {
-                        if (userActivity[i][k].User == users[j].UserName)
+                        if (userActivity[i][k].User == Users[j].UserName)
                         {
-                            users[j].AddData(userActivity[i][k].Rank, userActivity[i][k].Status, userActivity[i][k].Steps);
+                            Users[j].AddData(userActivity[i][k].Rank, userActivity[i][k].Status, userActivity[i][k].Steps);
                         }
                     }
                 }
             }
 
-            Debug.WriteLine(users[0].UserName + " " + users[0].Status + " " + users[0].Steps + " " + users[0].AverageSteps);
+            Debug.WriteLine(Users[0].UserName + " " + Users[0].Status[0] + " " + Users[0].Steps[0] + " " + Users[0].AverageSteps);
         }
     }
 }

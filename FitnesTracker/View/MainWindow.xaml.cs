@@ -23,30 +23,53 @@ namespace FitnesTracker.View
     /// </summary>
     public partial class MainWindow : Window
     {
+        Line _lineSteps;
+        Line _lineDays;
+        Polygon _triangleSteps;
+        Polygon _triangleDays;
+
         public MainWindow()
         {
             InitializeComponent();
-            //List<Models.UserActivity> userActivities = new List<Models.UserActivity>();
 
-            //string path = Environment.CurrentDirectory + "/TestData";
-            //string[] files = Directory.GetFiles(path);
-            //List<string> jsonData = new List<string>();
+            _lineSteps = new Line();
+            _lineDays = new Line();
+            _triangleSteps = new Polygon();
+            _triangleDays = new Polygon();
+            graphGrid.Children.Add(_lineSteps);
+            graphGrid.Children.Add(_lineDays);
+            graphGrid.Children.Add(_triangleSteps);
+            graphGrid.Children.Add(_triangleDays);
+        }
 
-            //for(int i = 0; i < files.Length; i++)
-            //{
-            //    jsonData.Add(File.ReadAllText(files[i]));
-            //    userActivities.Add(JsonConvert.DeserializeObject<Models.UserActivity>(jsonData[i]));
-            //}
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            DataContext = new ViewModel.UserActivityViewModel();
+        }
 
-            //string jsonData = File.ReadAllText(files[0]);
+        private void graphGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            _lineSteps.X1 = 10;
+            _lineSteps.Y1 = 10;
+            _lineSteps.X2 = 10;
+            _lineSteps.Y2 = graphGrid.ActualHeight - 10;
+            _lineSteps.StrokeThickness = 3;
+            _lineSteps.Stroke = Brushes.Black;
 
-            //Models.UserActivity[] userActivity = JsonSerializer.Deserialize<Models.UserActivity[]>(jsonData);
+            _triangleSteps.Points = new PointCollection { new Point(10, 10), new Point(8, 16), new Point(12, 16) };
+            _triangleSteps.StrokeThickness = 3;
+            _triangleSteps.Stroke = Brushes.Black;
 
-            //foreach (var act in userActivity)
-            //{
-            //    Debug.WriteLine($"{act.Steps}");
-            //}
-            
+            _lineDays.X1 = 10;
+            _lineDays.Y1 = graphGrid.ActualHeight - 10;
+            _lineDays.X2 = graphGrid.ActualWidth - 10;
+            _lineDays.Y2 = graphGrid.ActualHeight - 10;
+            _lineDays.StrokeThickness = 3;
+            _lineDays.Stroke = Brushes.Black;
+
+            _triangleDays.Points = new PointCollection { new Point(graphGrid.ActualWidth - 10, graphGrid.ActualHeight - 10), new Point(graphGrid.ActualWidth - 16, graphGrid.ActualHeight - 8), new Point(graphGrid.ActualWidth - 16, graphGrid.ActualHeight - 12) };
+            _triangleDays.StrokeThickness = 3;
+            _triangleDays.Stroke = Brushes.Black;
         }
     }
 }
