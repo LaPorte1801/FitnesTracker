@@ -7,25 +7,18 @@ using System.Windows;
 
 namespace FitnesTracker.ViewModel
 {
-    class UserActivityViewModel : DependencyObject
+    class UserActivityViewModel
     {
-        readonly List<Models.User> _users;
+        public List<Models.User> Users { get; }
 
-        public static readonly DependencyProperty StepsProperty;
-
-        static UserActivityViewModel()
-        {
-            StepsProperty = DependencyProperty.Register("UserSteps", typeof(List<int>), typeof(UserActivityViewModel));
-        }
         public UserActivityViewModel()
         {
-            _users = new Models.UserCreator().Users;
+            Users = new Models.UserCreator().Users;
         }
 
-        public List<int> UserSteps
+        public void ExportSelectedData(List<Models.User> selectedUsers, string exportPath)
         {
-            get { return (List<int>)GetValue(StepsProperty); }
-            set { SetValue(StepsProperty, value); }
-        }        
+            Models.UserSerializer.Serialize(selectedUsers, exportPath);
+        }
     }
 }

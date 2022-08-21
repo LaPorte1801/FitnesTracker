@@ -3,22 +3,37 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FitnesTracker"
+        xmlns:local="clr-namespace:FitnesTracker" xmlns:local1="clr-namespace:FitnesTracker.ViewModel"
         mc:Ignorable="d"
+        x:Name="mainWindow"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.3*"/>
-            <ColumnDefinition Width="0.7*"/>
+            <ColumnDefinition Width="0.4*"/>
+            <ColumnDefinition Width="0.6*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock Text="{Binding StepsProperty, Mode=Default}" Grid.Column="0"/>
-
-        <Canvas Grid.Column="1" x:Name="graphGrid" Margin="5" SizeChanged="graphGrid_SizeChanged">
-            <!--<Border Margin="5" BorderThickness="5" Background="#FFF0F0F0"/>-->
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <DataGrid x:Name="dGUsers" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Path=Users, Mode=OneWay}"  
+                  AutoGenerateColumns="False" ColumnHeaderHeight="25" SelectionChanged="dGUsers_SelectionChanged" Loaded="dGUsers_Loaded">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Имя пользователя" Binding="{Binding Path=UserName}" Width="120" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Среднее количество шагов" Binding="{Binding Path=AverageSteps}" Width="50" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Лучший результат за день" Binding="{Binding Path=BestResult}" Width="50" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Худший результат за день" Binding="{Binding Path=WorstResult}" Width="50" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Canvas Grid.Column="1" Grid.Row="1" x:Name="graphGrid" Margin="5" SizeChanged="graphGrid_SizeChanged">
+            <Border Margin="5" BorderThickness="5" Background="#FFF0F0F0"/>
+            <Polyline x:Name="pLStepsGraph" StrokeThickness="2" Stroke="Red"/>
         </Canvas>
+
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <MenuItem Header="Файл">
+                <MenuItem x:Name="mIExportSelectedData" Header="Экспорт выделенных данных" Click="mIExportSelectedData_Click"/>
+            </MenuItem>
+        </Menu>
     </Grid>
-    
-
-
 </Window>

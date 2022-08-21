@@ -8,16 +8,12 @@ using System.Windows;
 
 namespace FitnesTracker.Models
 {
-    internal class User : DependencyObject
+    internal class User
     {
         public List<int> Rank { get; }
         public string? UserName { get; }
         public List<string> Status { get; }
-        public List<int> Steps 
-        {
-            get { return (List<int>)GetValue(StepsProperty); }
-            set { SetValue(StepsProperty, value); }
-        }
+        public List<int> Steps { get; }
         public int AverageSteps 
         {
             get
@@ -48,19 +44,11 @@ namespace FitnesTracker.Models
             Steps = new List<int>();
         }
 
-        static User()
-        {
-            StepsProperty = DependencyProperty.Register("Steps", typeof(List<int>), typeof(User));
-        }
-
         public void AddData(int rank, string status, int steps)
         {
             Rank.Add(rank);
             Status.Add(status);
             Steps.Add(steps);
         }
-
-        public static readonly DependencyProperty StepsProperty;
-
     }
 }

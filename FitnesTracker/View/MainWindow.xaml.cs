@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -16,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+
 namespace FitnesTracker.View
 {
     /// <summary>
@@ -23,6 +25,7 @@ namespace FitnesTracker.View
     /// </summary>
     public partial class MainWindow : Window
     {
+        ViewModel.UserActivityViewModel viewModel = new();
         Line _lineSteps;
         Line _lineDays;
         Polygon _triangleSteps;
@@ -32,10 +35,30 @@ namespace FitnesTracker.View
         {
             InitializeComponent();
 
-            _lineSteps = new Line();
-            _lineDays = new Line();
-            _triangleSteps = new Polygon();
-            _triangleDays = new Polygon();
+            _lineSteps = new Line
+            {
+                StrokeThickness = 3,
+                Stroke = Brushes.Black
+            };
+
+            _lineDays = new Line
+            {
+                StrokeThickness = 3,
+                Stroke = Brushes.Black
+            };
+
+            _triangleSteps = new Polygon
+            {
+                StrokeThickness = 3,
+                Stroke = Brushes.Black
+            };
+
+            _triangleDays = new Polygon
+            {
+                StrokeThickness = 3,
+                Stroke = Brushes.Black
+            };
+
             graphGrid.Children.Add(_lineSteps);
             graphGrid.Children.Add(_lineDays);
             graphGrid.Children.Add(_triangleSteps);
@@ -44,32 +67,80 @@ namespace FitnesTracker.View
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = new ViewModel.UserActivityViewModel();
+            DataContext = viewModel;
         }
 
         private void graphGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            UpdateGraphics();
+        }
+
+        private void mIExportSelectedData_Click(object sender, RoutedEventArgs e)
+        {
+            if (dGUsers.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Данные не выделены", "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            else
+            {
+                string exportPath = "";
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = "JSON-Файл (*.json)|*.json|Все файлы (*.*)|*.*";
+                if (saveFileDialog.ShowDialog(this) == true)
+                {
+                    exportPath = saveFileDialog.FileName;
+                }
+               
+                viewModel.ExportSelectedData(dGUsers.SelectedItems.Cast<Models.User>().ToList(), exportPath);
+            }
+        }
+
+        private void UpdateGraphics()
         {
             _lineSteps.X1 = 10;
             _lineSteps.Y1 = 10;
             _lineSteps.X2 = 10;
             _lineSteps.Y2 = graphGrid.ActualHeight - 10;
-            _lineSteps.StrokeThickness = 3;
-            _lineSteps.Stroke = Brushes.Black;
 
             _triangleSteps.Points = new PointCollection { new Point(10, 10), new Point(8, 16), new Point(12, 16) };
-            _triangleSteps.StrokeThickness = 3;
-            _triangleSteps.Stroke = Brushes.Black;
 
             _lineDays.X1 = 10;
             _lineDays.Y1 = graphGrid.ActualHeight - 10;
             _lineDays.X2 = graphGrid.ActualWidth - 10;
             _lineDays.Y2 = graphGrid.ActualHeight - 10;
-            _lineDays.StrokeThickness = 3;
-            _lineDays.Stroke = Brushes.Black;
 
-            _triangleDays.Points = new PointCollection { new Point(graphGrid.ActualWidth - 10, graphGrid.ActualHeight - 10), new Point(graphGrid.ActualWidth - 16, graphGrid.ActualHeight - 8), new Point(graphGrid.ActualWidth - 16, graphGrid.ActualHeight - 12) };
-            _triangleDays.StrokeThickness = 3;
-            _triangleDays.Stroke = Brushes.Black;
+            _triangleDays.Points = new PointCollection 
+            { 
+                new Point(graphGrid.ActualWidth - 10,
+                graphGrid.ActualHeight - 10), new Point(graphGrid.ActualWidth - 16, graphGrid.ActualHeight - 8),
+                new Point(graphGrid.ActualWidth - 16, graphGrid.ActualHeight - 12) 
+            };
+
+            pLStepsGraph.Points = new PointCollection();
+
+            if (dGUsers.SelectedItem != null)
+            {
+                double scale = graphGrid.ActualHeight / (((Models.User)dGUsers.SelectedItem).Steps.Max() * 2);
+
+                for (int i = 0; i < ((Models.User)dGUsers.SelectedItem).Steps.Count; i++)
+                {
+                    pLStepsGraph.Points.Add(new Point((i * (graphGrid.ActualWidth /
+                        ((Models.User)dGUsers.SelectedItem).Steps.Count) + 10),
+                        graphGrid.ActualHeight - ((Models.User)dGUsers.SelectedItem).Steps[i] * scale - 10));
+                }
+
+
+            }
+        }
+
+        private void dGUsers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateGraphics();
+        }
+
+        private void dGUsers_Loaded(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }
