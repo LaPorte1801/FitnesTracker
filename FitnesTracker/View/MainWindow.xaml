@@ -6,18 +6,19 @@
         xmlns:local="clr-namespace:FitnesTracker" xmlns:local1="clr-namespace:FitnesTracker.ViewModel"
         mc:Ignorable="d"
         x:Name="mainWindow"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="FitnessTracker" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.4*"/>
-            <ColumnDefinition Width="0.6*"/>
+            <ColumnDefinition Width="0.65*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+       
         <DataGrid x:Name="dGUsers" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding Path=Users, Mode=OneWay}"  
-                  AutoGenerateColumns="False" ColumnHeaderHeight="25" SelectionChanged="dGUsers_SelectionChanged" Loaded="dGUsers_Loaded">
+                  AutoGenerateColumns="False" ColumnHeaderHeight="25" SelectionChanged="dGUsers_SelectionChanged" LoadingRow="dGUsers_LoadingRow">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Имя пользователя" Binding="{Binding Path=UserName}" Width="120" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Среднее количество шагов" Binding="{Binding Path=AverageSteps}" Width="50" IsReadOnly="True"/>
@@ -25,9 +26,19 @@
                 <DataGridTextColumn Header="Худший результат за день" Binding="{Binding Path=WorstResult}" Width="50" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
-        <Canvas Grid.Column="1" Grid.Row="1" x:Name="graphGrid" Margin="5" SizeChanged="graphGrid_SizeChanged">
-            <Border Margin="5" BorderThickness="5" Background="#FFF0F0F0"/>
+                
+        <Canvas Grid.Column="1" Grid.Row="1" x:Name="graphCanvas" Margin="5" SizeChanged="graphGrid_SizeChanged">
+            <Line x:Name="lineStepsAxis" StrokeThickness="3" Stroke="Black"/>
+            <Line x:Name="lineDaysAxis" StrokeThickness="3" Stroke="Black"/>
+            <Polygon x:Name="stepsAxisArrow" StrokeThickness="3" Stroke="Black"/>
+            <Polygon x:Name="daysAxisArrow" StrokeThickness="3" Stroke="Black"/>
+            <TextBlock x:Name="tbStepsAxisTitle" Text="Steps" FontSize="12" Margin="20, 5"/>
+            <TextBlock x:Name="tbDaysAxisTitle" Text="Days" FontSize="12"/>
+            <TextBlock x:Name="tbZero" Text="0" FontSize="15"/>
             <Polyline x:Name="pLStepsGraph" StrokeThickness="2" Stroke="Red"/>
+            <Ellipse x:Name="maximumDot" Height="10" Width="10" Fill="Lime" Visibility="Hidden"/>
+            <Ellipse x:Name="minimumDot" Height="10" Width="10" Fill="Brown" Visibility="Hidden"/>
+            
         </Canvas>
 
         <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
@@ -35,5 +46,6 @@
                 <MenuItem x:Name="mIExportSelectedData" Header="Экспорт выделенных данных" Click="mIExportSelectedData_Click"/>
             </MenuItem>
         </Menu>
+        
     </Grid>
 </Window>

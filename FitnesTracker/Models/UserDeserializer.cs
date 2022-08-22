@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace FitnesTracker.Models
@@ -17,18 +13,18 @@ namespace FitnesTracker.Models
             List<User> Users = new();
 
             string path;
-            string[] files;
+            string[] filesNumber;
 
             List<UserActivity[]> userActivity = new();
 
             try
             {
                 path = Environment.CurrentDirectory + "/TestData";
-                files = Directory.GetFiles(path);
+                filesNumber = Directory.GetFiles(path);
 
-                foreach (var file in files)
+                for (int i = 0; i < filesNumber.Length; i++)
                 {
-                    string jsonData = File.ReadAllText(file);
+                    string jsonData = File.ReadAllText(path + $"/day{i + 1}.json");
                     userActivity.Add(JsonSerializer.Deserialize<UserActivity[]>(jsonData));
                 }
             }
@@ -37,6 +33,12 @@ namespace FitnesTracker.Models
                 MessageBox.Show("Папка TestData не найдена. Поместите папку TestData в одну папку с исполняемым файлом",
                     "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                 
+            }
+            catch (FileNotFoundException)
+            {
+                MessageBox.Show("Данные в папке TestData повреждены либо введены некорректно", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(1);
             }
             catch (JsonException)
             {

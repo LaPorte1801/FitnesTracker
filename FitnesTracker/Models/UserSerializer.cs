@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
+using System.Windows;
 
 namespace FitnesTracker.Models
 {
@@ -12,15 +10,24 @@ namespace FitnesTracker.Models
     {
         public static void Serialize(List<User> selectedUsers, string directoryPath)
         {
-            //for (int i = 0; i < selectedUsers[0].Steps.Count; i++)
-            //{
-            //    File.Create(directoryPath + $"{i + 1}.json");
-            //}
-
-            for (int i = 0; i < selectedUsers.Count; i++)
+            try
             {
-                File.WriteAllText(directoryPath + $"{i + 1}.json", JsonConvert.SerializeObject(selectedUsers[i]), Encoding.UTF8);
+                for (int i = 0; i < selectedUsers.Count; i++)
+                {
+                    File.WriteAllText(directoryPath.Split('.')[0] + $"{i + 1}." + directoryPath.Split('.')[1], JsonConvert.SerializeObject(selectedUsers[i]), Encoding.UTF8);
+                }
             }
+            catch (DirectoryNotFoundException ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            catch (JsonSerializationException ex)
+            {
+                MessageBox.Show(ex.Message, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            
         }
     }
 }
